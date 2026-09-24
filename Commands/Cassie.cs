@@ -7,6 +7,7 @@ using CommandSystem;
 using Cassie;
 using LabApi.Features.Console;
 using LabApi.Features.Wrappers;
+using LACassie;
 
 namespace LACassie.Commands;
 
@@ -14,7 +15,7 @@ namespace LACassie.Commands;
 public class LACassie : ICommand
 {
     public string Command { get; } = "lacassie";
-    public string[] Aliases { get; } = { "lac" };
+    public string[] Aliases { get; } = { "lac", "cassie" };
     public string Description { get; } = "Make CASSIE say something";
     
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -27,7 +28,7 @@ public class LACassie : ICommand
         }
         var message = string.Join(" ", arguments);
         var ttsPayload = new CassieTtsPayload(message, true, true);
-        Logger.Debug("Sending CASSIE announcement");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE announcement");
         Announcer.Message(ttsPayload);
         response = "Announcement sent.";
         return true;
@@ -38,7 +39,7 @@ public class LACassie : ICommand
 public class LACassieSilent : ICommand
 {
     public string Command { get; } = "lacassiesilent";
-    public string[] Aliases { get; } = { "lacs", "lacassie_silent" };
+    public string[] Aliases { get; } = { "lacs", "lacassie_silent", "cassie_sl" };
     public string Description { get; } = "Make CASSIE say something, but without the static and chimes";
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -51,7 +52,7 @@ public class LACassieSilent : ICommand
         }
         var message = string.Join(" ", arguments);
         var ttsPayload = new CassieTtsPayload(message, true, false);
-        Logger.Debug("Sending CASSIE silent announcement");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE silent announcement");
         Announcer.Message(ttsPayload);
         response = "Announcement sent.";
         return true;
@@ -62,12 +63,12 @@ public class LACassieSilent : ICommand
 public class LACassieSubtitles : ICommand
 {
     public string Command { get; } = "lacassiesubtitles";
-    public string[] Aliases { get; } = { "lacsub", "lacassie_subtitles" };
+    public string[] Aliases { get; } = { "lacsub", "lacassie_subtitles", "cassie_subtitles" };
     public string Description { get; } = "Make CASSIE say something, but with custom subtitles";
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        // throw new NotImplementedException("This command is still being made");
+        throw new NotImplementedException("This command is still being tested");
         if (arguments.Count < 2)
         {
             response = "Usage: lacassiesubtitles \"<announcement>\" \"<subtitles>\" \nEx: lacassiesubtitles \"HELLO WORLD\" \"Hello, World!\"";
@@ -77,7 +78,7 @@ public class LACassieSubtitles : ICommand
         var message = arguments.At(0);
         var subtitles = arguments.At(1);
         var ttsPayload = new CassieTtsPayload(message, subtitles, true);
-        Logger.Debug("Sending CASSIE announcement with subtitles");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE announcement with subtitles");
         Announcer.Message(ttsPayload);
         response = "Announcement with subtitles sent.";
         return true;
@@ -88,12 +89,12 @@ public class LACassieSubtitles : ICommand
 public class LACassieSubtitlesSilent : ICommand
 {
     public string Command { get; } = "lacassiesubtitlessilent";
-    public string[] Aliases { get; } = { "lacsubs", "lacassie_subtitlessilent" };
+    public string[] Aliases { get; } = { "lacsubs", "lacassie_subtitlessilent", "cassie_sl_subtitles" };
     public string Description { get; } = "Make CASSIE say something, but with custom subtitles and without the static and chimes";
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        // throw new NotImplementedException("This command is still being made");
+        throw new NotImplementedException("This command is still being tested");
         if (arguments.Count < 2)
         {
             response = "Usage: lacassiesubtitlessilent \"<announcement>\" \"<subtitles>\" \nEx: lacassiesubtitles \"HELLO WORLD\" \"Hello, World!\"";
@@ -103,7 +104,7 @@ public class LACassieSubtitlesSilent : ICommand
         var message = arguments.At(0);
         var subtitles = arguments.At(1);
         var ttsPayload = new CassieTtsPayload(message, subtitles, false);
-        Logger.Debug("Sending CASSIE silent announcement with subtitles");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE silent announcement with subtitles");
         Announcer.Message(ttsPayload);
         response = "Announcement with subtitles sent.";
         return true;
@@ -119,7 +120,7 @@ public class LACassieClear : ICommand
     
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        Logger.Debug("Clearing CASSIE queue");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug("Clearing CASSIE queue");
         Announcer.Clear();
         response = "Cleared CASSIE queue";
         return true;

@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("LACassie")]
 [assembly: AssemblyDescription("Allows using CASSIE in Local Admin")]
 [assembly: AssemblyProduct("LACassie")]
-[assembly: AssemblyCopyright("Copyright © NameDuckling770 2026")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

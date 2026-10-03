@@ -3,6 +3,7 @@
 // ReSharper disable UnusedType.Global
 #pragma warning disable CS0162
 using System;
+using System.Linq;
 using CommandSystem;
 using Cassie;
 using LabApi.Features.Console;
@@ -10,6 +11,20 @@ using LabApi.Features.Wrappers;
 using LACassie;
 
 namespace LACassie.Commands;
+
+internal static class CassieCommandHelper
+{
+    public static string[] ParseQuotedArguments(ArraySegment<string> arguments)
+    {
+        string input = string.Join(" ", arguments);
+
+        // The command parser appears to remove the opening quotes
+        // while leaving the closing quotes attached to the arguments.
+        string[] parts = input.Split('"');
+
+        return parts.Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+    }
+}
 
 [CommandHandler(typeof(GameConsoleCommandHandler))]
 public class LACassie : ICommand
@@ -28,7 +43,7 @@ public class LACassie : ICommand
         }
         var message = string.Join(" ", arguments);
         var ttsPayload = new CassieTtsPayload(message, true, true);
-        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE announcement");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug($"Sending CASSIE announcement: {message}");
         Announcer.Message(ttsPayload);
         response = "Announcement sent.";
         return true;
@@ -52,7 +67,7 @@ public class LACassieSilent : ICommand
         }
         var message = string.Join(" ", arguments);
         var ttsPayload = new CassieTtsPayload(message, true, false);
-        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE silent announcement");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug($"Sending CASSIE silent announcement: {message}");
         Announcer.Message(ttsPayload);
         response = "Announcement sent.";
         return true;
@@ -68,17 +83,18 @@ public class LACassieSubtitles : ICommand
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        // throw new NotImplementedException("This command is still being tested");
-        if (arguments.Count < 2)
+        string[] parsed = CassieCommandHelper.ParseQuotedArguments(arguments);
+        
+        if (parsed.Length < 2)
         {
             response = "Usage: lacassiesubtitles \"<announcement>\" \"<subtitles>\" \nEx: lacassiesubtitles \"HELLO WORLD\" \"Hello, World!\"";
             return false;
         }
 
-        var message = arguments.At(0);
-        var subtitles = arguments.At(1);
+        string message = parsed[0];
+        string subtitles = parsed[1];
         var ttsPayload = new CassieTtsPayload(message, subtitles, true);
-        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE announcement with subtitles");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug($"Sending CASSIE announcement with subtitles: {message}");
         Announcer.Message(ttsPayload);
         response = "Announcement with subtitles sent.";
         return true;
@@ -94,17 +110,18 @@ public class LACassieSubtitlesSilent : ICommand
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        // throw new NotImplementedException("This command is still being tested");
-        if (arguments.Count < 2)
+        string[] parsed = CassieCommandHelper.ParseQuotedArguments(arguments);
+        
+        if (parsed.Length < 2)
         {
             response = "Usage: lacassiesubtitlessilent \"<announcement>\" \"<subtitles>\" \nEx: lacassiesubtitles \"HELLO WORLD\" \"Hello, World!\"";
             return false;
         }
 
-        var message = arguments.At(0);
-        var subtitles = arguments.At(1);
+        string message = parsed[0];
+        string subtitles = parsed[1];
         var ttsPayload = new CassieTtsPayload(message, subtitles, false);
-        if (Plugin.Main.Config.DebugMode) Logger.Debug("Sending CASSIE silent announcement with subtitles");
+        if (Plugin.Main.Config.DebugMode) Logger.Debug($"Sending CASSIE silent announcement with subtitles: {message}");
         Announcer.Message(ttsPayload);
         response = "Announcement with subtitles sent.";
         return true;

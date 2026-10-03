@@ -68,7 +68,7 @@ public class LACassieSubtitles : ICommand
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        throw new NotImplementedException("This command is still being tested");
+        // throw new NotImplementedException("This command is still being tested");
         if (arguments.Count < 2)
         {
             response = "Usage: lacassiesubtitles \"<announcement>\" \"<subtitles>\" \nEx: lacassiesubtitles \"HELLO WORLD\" \"Hello, World!\"";
@@ -94,7 +94,7 @@ public class LACassieSubtitlesSilent : ICommand
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        throw new NotImplementedException("This command is still being tested");
+        // throw new NotImplementedException("This command is still being tested");
         if (arguments.Count < 2)
         {
             response = "Usage: lacassiesubtitlessilent \"<announcement>\" \"<subtitles>\" \nEx: lacassiesubtitles \"HELLO WORLD\" \"Hello, World!\"";

@@ -132,7 +132,7 @@ public class LACassieSubtitlesSilent : ICommand
 public class LACassieClear : ICommand
 {
     public string Command { get; } = "lacassieclear";
-    public string[] Aliases { get; } = { "lacc", "lacassie_clear", "laclearcassie" };
+    public string[] Aliases { get; } = { "lacc", "lacassie_clear", "laclearcassie", "clear_cassie" };
     public string Description { get; } = "Clear the CASSIE queue";
     
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
